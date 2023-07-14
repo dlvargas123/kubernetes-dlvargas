@@ -92,15 +92,15 @@ else
   echo "Hubo un error al ejecutar el script."
 fi
 #################################################################################
-sleep 300
+sleep 480
 echo "Installing cert-manager..."
-
+sleep 5
 helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --create-namespace \
   --set installCRDs=true
-
+sleep 5
 echo "cert-manager installation complete."
 sleep 10
 chmod +x deploy-cert-manager.sh
