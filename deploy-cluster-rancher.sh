@@ -90,3 +90,39 @@ if [ $? -eq 0 ]; then
 else
   echo "Hubo un error al ejecutar el script."
 fi
+sleep 5
+############################### Función para verificar el estado de los nodos##############################
+check_node_status() {
+  local nodes=($(kubectl get nodes --no-headers | awk '{print $1}'))
+
+  for node in "${nodes[@]}"; do
+    local status=$(kubectl get node "$node" --no-headers | awk '{print $2}')
+
+    if [[ "$status" != "Ready" ]]; then
+      echo "El nodo $node no está en estado Ready."
+      return 1
+    fi
+  done
+
+  return 0
+}
+sleep 2
+# Verificar el estado de los nodos antes de continuar
+if ! check_node_status; then
+  echo "No todos los nodos están en estado Ready. No se puede continuar."
+fi
+sleep 5
+echo "Installing cert-manager..."
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --set installCRDs=true
+sleep 5
+echo "cert-manager installation complete."
+sleep 10
+chmod +x deploy-cert-manager.sh
+sleep 5
+./deploy-cert-manager.sh
+sleep 20
+kubectl apply -f /root/issuer.yaml
