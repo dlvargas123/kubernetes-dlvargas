@@ -1,55 +1,48 @@
 #!/bin/bash
 
-# Función para verificar la conexión SSH a un nodo
-function check_ssh_connection() {
-    local node=$1
-    ssh -o BatchMode=yes -o ConnectTimeout=5 $node "echo 2>&1" && return 0 || return 1
+# Función para verificar la respuesta SSH de un nodo
+check_ssh() {
+    local node="$1"
+    ssh -o ConnectTimeout=5 "$node" exit
+    return $?
 }
 
-# Nodos a verificar
+# Array de nodos
 nodes=("nodo-21" "nodo-22" "nodo-23")
 
-# Variable para controlar si todos los nodos están disponibles
-all_nodes_available=true
-
-# Verificar conexión SSH para cada nodo
+# Verificar la respuesta SSH para cada nodo
 for node in "${nodes[@]}"; do
-    if check_ssh_connection $node; then
-        echo "Conexión SSH exitosa con $node"
+    if check_ssh "$node"; then
+        echo "El nodo $node responde a SSH"
     else
-        echo "No se pudo establecer conexión SSH con $node"
-        all_nodes_available=false
+        echo "El nodo $node no responde a SSH"
+        exit 1
     fi
 done
 
-# Ejecutar segunda parte del script si todos los nodos están disponibles
-if $all_nodes_available; then
-    echo "Todos los nodos están disponibles. Configurando cluster de Kubernetes…"
-
-    # Capturar el valor de Registration cluster-k8s
-    read -p "Introduce el valor de Registration cluster-k8s: " registration_master
-    sleep 2
-
-    echo "Registrando nodos y master al cluster de Kubernetes"
-    sleep 2
-
-    # Lista de nodos
-    nodos=("nodo-21" "nodo-22" "nodo-23")
-
-    # Registrar nodos y ejecutar el script exportar-kubeconfig
-    for nodo in "${nodos[@]}"; do
-        ssh root@"$nodo" "$registration_master"
-        sleep 10
-
-        # Descargar el script exportar-kubeconfig
-        wget -O exportar-kubeconfig.sh https://raw.githubusercontent.com/dlvargas123/kubernetes-dlvargas/main/exportar-kubeconfig.sh
-
-        # Asignar permisos de ejecución al script
-        chmod +x exportar-kubeconfig.sh
-
-        # Ejecutar el script exportar-kubeconfig.sh
-        ./exportar-kubeconfig.sh
-    done
+# Ejecutar la segunda parte del script
+echo "Creando Cluster de Kubernetes..."
+sleep 2
+# Capturar el valor de Registration MASTER
+read -p "Introduce el valor de Registration cluster-k8s: " registration_master
+#echo "El valor de Registration MASTER es: $registration_master"
+sleep 2
+# Utilizar las variables capturadas
+echo "Registrando nodos y master al cluster de kubernetes"
+sleep 2
+ssh root@nodo-21 "$registration_master"
+sleep 10
+ssh root@nodo-22 "$registration_master"
+sleep 10
+ssh root@nodo-23 "$registration_master"
+sleep 10
+# Ejecutar el script exportar-kubeconfig.sh
+echo "Ejecutando exportar-kubeconfig.sh..."
+sleep 2
+curl -sSf https://raw.githubusercontent.com/dlvargas123/kubernetes-dlvargas/main/exportar-kubeconfig.sh | bash
+# Verificar si se ejecutó correctamente
+if [ $? -eq 0 ]; then
+  echo "El script exportar-kubeconfig.sh se ejecutó correctamente."
 else
-    echo "Algunos nodos no están disponibles. No se ejecutará la segunda parte del script."
+  echo "Hubo un error al ejecutar el script."
 fi
