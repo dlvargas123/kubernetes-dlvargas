@@ -91,7 +91,7 @@ else
   echo "Hubo un error al ejecutar el script."
 fi
 #################################################################################
-sleep 600
+sleep 300
 echo "Installing cert-manager..."
 
 helm install \
@@ -106,8 +106,8 @@ chmod +x deploy-cert-manager.sh
 sleep 5
 ./deploy-cert-manager.sh
 sleep 20
+echo "Aplicando issuer.yaml"
 kubectl apply -f /root/issuer.yaml
 sleep 5
-systemctl start deploy-apps-k8s-3.service
-sleep 5
+
 #################################################################################
