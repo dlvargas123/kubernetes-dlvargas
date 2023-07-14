@@ -1,3 +1,4 @@
+#################################################################################
 #!/bin/bash
 
 # Función para verificar la respuesta SSH de un nodo
@@ -109,5 +110,4 @@ sleep 20
 echo "Aplicando issuer.yaml"
 kubectl apply -f /root/issuer.yaml
 sleep 5
-
 #################################################################################
