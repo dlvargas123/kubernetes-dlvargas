@@ -90,3 +90,24 @@ if [ $? -eq 0 ]; then
 else
   echo "Hubo un error al ejecutar el script."
 fi
+#################################################################################
+sleep 600
+echo "Installing cert-manager..."
+
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --set installCRDs=true
+
+echo "cert-manager installation complete."
+sleep 10
+chmod +x deploy-cert-manager.sh
+sleep 5
+./deploy-cert-manager.sh
+sleep 20
+kubectl apply -f /root/issuer.yaml
+sleep 5
+systemctl start deploy-apps-k8s-3.service
+sleep 5
+#################################################################################
