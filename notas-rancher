@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Instalar dependencias
+sudo apt-get update
+sudo apt-get install -y docker.io
+
+# Iniciar el servicio Docker
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Descargar e iniciar el contenedor de Rancher
+sudo docker run -d --restart=unless-stopped -p 8181:80 -p 8543:443 rancher/rancher
+
+echo "El despliegue de Rancher se ha completado correctamente."
+
+
+#cloud-config
+hostname: master-11
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens160:
+      addresses:
+        - 10.10.0.11/24
+      routes:
+        - to: default
+          via: 10.10.0.1
+      nameservers:
+          addresses: [8.8.8.8, 1.1.1.1]
