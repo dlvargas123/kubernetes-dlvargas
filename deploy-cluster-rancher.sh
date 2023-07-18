@@ -93,6 +93,10 @@ else
 fi
 #################################################################################
 sleep 480
+helm repo add jetstack https://charts.jetstack.io
+sleep 2
+helm repo update
+sleep 1
 echo "Installing cert-manager..."
 sleep 5
 helm install \
