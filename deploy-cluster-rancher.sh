@@ -1,17 +1,17 @@
 #################################################################################
 #!/bin/bash
 
-# Función para verificar la respuesta SSH de un nodo
+# Función para verificar la respuesta SSH de un nodo worker o master
 check_ssh() {
     local node="$1"
     ssh -o ConnectTimeout=5 "$node" exit
     return $?
 }
 
-# Array de nodos
+# Array de nodos workers
 nodes=("nodo-21" "nodo-22" "nodo-23")
 
-# Verificar la respuesta SSH para cada nodo
+# Verificar la respuesta SSH para cada nodo worker
 for node in "${nodes[@]}"; do
     if check_ssh "$node"; then
         echo "El nodo $node responde a SSH"
@@ -21,22 +21,46 @@ for node in "${nodes[@]}"; do
     fi
 done
 
+# Array de nodos masters
+masters=("master-11" "master-12" "master-13")
+
+# Verificar la respuesta SSH para cada nodo master
+for master in "${masters[@]}"; do
+    if check_ssh "$master"; then
+        echo "El nodo $master responde a SSH"
+    else
+        echo "El nodo $master no responde a SSH"
+        exit 1
+    fi
+done
+#################################################################################
 # Ejecutar la segunda parte del script
 echo "Creando Cluster de Kubernetes..."
 sleep 2
-# Capturar el valor de Registration MASTER
-read -p "Introduce el valor de Registration cluster-k8s: " registration_master
-#echo "El valor de Registration MASTER es: $registration_master"
+# Capturar el valor de Registro master
+read -p "Introduce el valor de Registro master: " registration_master
 sleep 2
 # Utilizar las variables capturadas
-echo "Registrando nodos y master al cluster de kubernetes"
+echo "Registrando master al cluster de kubernetes"
 sleep 2
-ssh root@nodo-21 "$registration_master"
-sleep 10
-ssh root@nodo-22 "$registration_master"
-sleep 10
-ssh root@nodo-23 "$registration_master"
-sleep 10
+ssh root@master-11 "$registration_master"
+sleep 5
+ssh root@master-12 "$registration_master"
+sleep 5
+ssh root@master-13 "$registration_master"
+sleep 5
+# Capturar el valor de Registro nodos worker
+read -p "Introduce el valor de nodos worker: " registration_worker
+sleep 2
+# Utilizar las variables capturadas
+echo "Registrando master al cluster de kubernetes"
+sleep 2
+ssh root@nodo-21 "$registration_worker"
+sleep 5
+ssh root@nodo-22 "$registration_worker"
+sleep 5
+ssh root@nodo-23 "$registration_worker"
+sleep 5
 # Ejecutar el script exportar-kubeconfig.sh
 echo "Ejecutando exportar-kubeconfig.sh..."
 sleep 2
