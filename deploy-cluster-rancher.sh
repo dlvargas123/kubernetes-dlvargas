@@ -40,27 +40,27 @@ sleep 2
 # Capturar el valor de Registro master
 read -p "Introduce el valor de Registro master: " registration_master
 sleep 2
-# Utilizar las variables capturadas
-echo "Registrando master al cluster de kubernetes"
-sleep 2
-ssh root@master-11 "$registration_master"
-sleep 5
-ssh root@master-12 "$registration_master"
-sleep 5
-ssh root@master-13 "$registration_master"
-sleep 5
 # Capturar el valor de Registro nodos worker
 read -p "Introduce el valor de nodos worker: " registration_worker
 sleep 2
 # Utilizar las variables capturadas
 echo "Registrando master al cluster de kubernetes"
 sleep 2
+ssh root@master-11 "$registration_master"
+sleep 2
+ssh root@master-12 "$registration_master"
+sleep 2
+ssh root@master-13 "$registration_master"
+sleep 2
+# Utilizar las variables capturadas
+echo "Registrando workers al cluster de kubernetes"
+sleep 2
 ssh root@nodo-21 "$registration_worker"
-sleep 5
+sleep 2
 ssh root@nodo-22 "$registration_worker"
-sleep 5
+sleep 2
 ssh root@nodo-23 "$registration_worker"
-sleep 5
+sleep 2
 # Ejecutar el script exportar-kubeconfig.sh
 echo "Ejecutando exportar-kubeconfig.sh..."
 sleep 2
