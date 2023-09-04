@@ -47,20 +47,20 @@ sleep 2
 echo "Registrando master al cluster de kubernetes"
 sleep 2
 ssh root@master-11 "$registration_master"
-sleep 10
+sleep 5
 ssh root@master-12 "$registration_master"
-sleep 10
+sleep 5
 ssh root@master-13 "$registration_master"
-sleep 10
+sleep 5
 # Utilizar las variables capturadas
 echo "Registrando workers al cluster de kubernetes"
 sleep 2
 ssh root@nodo-21 "$registration_worker"
-sleep 10
+sleep 5
 ssh root@nodo-22 "$registration_worker"
-sleep 10
+sleep 5
 ssh root@nodo-23 "$registration_worker"
-sleep 10
+sleep 5
 # Ejecutar el script exportar-kubeconfig.sh
 echo "Ejecutando exportar-kubeconfig.sh..."
 sleep 2
