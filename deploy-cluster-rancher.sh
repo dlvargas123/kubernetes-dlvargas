@@ -143,6 +143,8 @@ cp /etc/rancher/rke2/rke2.yaml /root/.kube/config_parra
 sleep 1
 ssh root@200.91.192.81  "mkdir /home/config-k0s/RKE/$ipextp"
 sleep 1
+ssh root@200.91.192.81  "mkdir /home/config-RKE/$ipextp"
+sleep 1
 scp /root/.kube/config_parra root@200.91.192.81:/home/config-RKE/$ipextp
 #################################################################################
 cat imagen-ifx.txt
