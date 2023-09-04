@@ -139,7 +139,7 @@ echo "Aplicando issuer.yaml"
 kubectl apply -f /root/issuer.yaml
 #################################################################################
 sleep 2
-cp cp /etc/rancher/rke2/rke2.yaml /root/.kube/config_parra
+cp /etc/rancher/rke2/rke2.yaml /root/.kube/config_parra
 sleep 1
 ssh root@200.91.192.81  "mkdir /home/config-k0s/RKE/$ipextp"
 sleep 1
